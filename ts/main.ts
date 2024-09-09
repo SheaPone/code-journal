@@ -17,6 +17,7 @@ function inputPhoto(event: Event): void {
   const eventTarget = event.target as HTMLInputElement;
   const newSrc = eventTarget.value;
   $img.src = newSrc;
+  writeEntries();
 }
 
 $photo.addEventListener('input', inputPhoto);
@@ -37,7 +38,7 @@ formElementsValues.addEventListener('submit', (event: Event) => {
   };
   data.nextEntryId++;
   data.entries.push(newEntry);
-  console.log(newEntry);
+  writeEntries();
   $img.src = originalSrc;
   formElementsValues.reset();
 });

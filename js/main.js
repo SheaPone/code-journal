@@ -1,17 +1,18 @@
 'use strict';
-//Input event listener//
+// Input event listener//
 const $photo = document.querySelector('#photo');
 const $img = document.querySelector('img');
 if (!$photo || !$img) throw new Error('$photo or $img query failed');
-let originalSrc = $img.src;
+const originalSrc = $img.src;
 $img.dataset.originalSrc = originalSrc;
 function inputPhoto(event) {
   const eventTarget = event.target;
   const newSrc = eventTarget.value;
   $img.src = newSrc;
+  writeEntries();
 }
 $photo.addEventListener('input', inputPhoto);
-//Submit event listener//
+// Submit event listener//
 const formElementsValues = document.querySelector('form');
 if (!formElementsValues) throw new Error('formElementsVales query failed');
 formElementsValues.addEventListener('submit', (event) => {
@@ -24,8 +25,8 @@ formElementsValues.addEventListener('submit', (event) => {
     entryId: data.nextEntryId,
   };
   data.nextEntryId++;
-  data['entries'].push(newEntry);
-  console.log(newEntry);
+  data.entries.push(newEntry);
+  writeEntries();
   $img.src = originalSrc;
   formElementsValues.reset();
 });
