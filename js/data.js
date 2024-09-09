@@ -1,4 +1,5 @@
-const data: any = {
+'use strict';
+const data = {
   view: 'entry-form',
   entries: [],
   editing: null,
