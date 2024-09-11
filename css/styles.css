@@ -68,13 +68,27 @@ ul {
   list-style-type: none;
 }
 
+.column-third {
+  flex-basis: calc(100% / 3);
+}
+
+.entries {
+  margin-top: 10%;
+  text-align: center;
+}
+
+.yes {
+  display: none;
+}
+
 @media screen and (width >= 376px) {
   .column-half {
     display: flex;
     flex-direction: column;
   }
 
-  .input-group {
+  .input-group,
+  .input-notes {
     margin: 4%;
   }
 

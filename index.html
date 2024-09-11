@@ -45,7 +45,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="column-full">
+            <div class="column-full input-notes">
               <label for="notes">Notes</label>
               <textarea id="notes" name="notes" required></textarea>
               <button type="submit">SAVE</button>
@@ -54,53 +54,15 @@
         </form>
       </div>
       <div data-view="entries" class="">
-        <h1 id="view-entries">Entries</h1>
-        <ul>
-          <li class="row">
-            <div class="column-half">
-              <img src="images/placeholder-image-square.jpg" />
-            </div>
-            <div class="column-half">
-              <h2>Ada Lovelace</h2>
-              <p>
-                Augusta Ada King, Countess of Lovelace, also known as Ada
-                Lovelace, was an English mathematician and writer chiefly known
-                for her work on Charles Babbage's proposed mechanical
-                general-purpose computer, the Analytical Engine. She was the
-                first to recognize that the machine had applications beyond pure
-                calculation.
-              </p>
-              <p>
-                In her notes, Ada Lovelace emphasized the difference between the
-                Analytical Engine and previous calculating machines,
-                particularly its ability to be programmed to solve problems of
-                any complexity.She realized the potential of the device extended
-                far beyond mere number crunching
-              </p>
-            </div>
-          </li>
-          <li class="row">
-            <div class="column-half">
-              <img src="images/placeholder-image-square.jpg" />
-            </div>
-            <div class="column-half">
-              <h2>Javascript</h2>
-              <p>
-                JavaScript, often abbreviated as JS, is a programming language
-                and core technology of the Web, alongside HTML and CSS. 99% of
-                websites use JavaScript on the client side for webpage behavior.
-                Web browsers have a dedicated JavaScript engine that executes
-                the client code.
-              </p>
-              <p>
-                JavaScript is a high-level, interpreted programming language
-                primarily used for the front-end development of web pages and
-                web apps. It's a versatile scripting language that can be
-                embedded into HTML code and executed by web browsers.
-              </p>
-            </div>
-          </li>
-        </ul>
+        <div class="row">
+          <h1 id="view-entries" class="column-third">Entries</h1>
+          <div class="column-third"></div>
+          <div class="column-third">
+            <button>New</button>
+          </div>
+        </div>
+        <p class="entries no">No entries have been recorded.</p>
+        <ul></ul>
       </div>
     </main>
     <script src="js/data.js"></script>
