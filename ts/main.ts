@@ -88,9 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < data.entries.length; i++) {
     const dataEntry = data.entries[i];
     $ul.appendChild(renderEntry(dataEntry));
-    viewSwap(data.view);
-    toggleNoEntries();
   }
+  viewSwap(data.view);
+  toggleNoEntries();
 });
 
 // Function to display no entries message//
@@ -136,5 +136,7 @@ const $aEntryForm = document.querySelector('#entry-form-a');
 if (!$aEntryForm) throw new Error('$aEntry-form-a query failed');
 
 $aEntryForm!.addEventListener('click', () => {
+  formElementsValues.reset();
+  $img.src = originalSrc;
   viewSwap('entry-form');
 });

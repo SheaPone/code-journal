@@ -60,11 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < data.entries.length; i++) {
     const dataEntry = data.entries[i];
     $ul.appendChild(renderEntry(dataEntry));
-    viewSwap(data.view);
-    toggleNoEntries();
   }
+  viewSwap(data.view);
+  toggleNoEntries();
 });
-//Function to display no entries message//
+// Function to display no entries message//
 const $entriesMessage = document.querySelector('.entries');
 if (!$entriesMessage) throw new Error('$entriesMessage query failed');
 function toggleNoEntries() {
@@ -74,7 +74,7 @@ function toggleNoEntries() {
     $entriesMessage.className = 'entries yes';
   }
 }
-//View Swap function//
+// View Swap function//
 const $view = document.querySelector('.view');
 const $entries = document.querySelector('#entries');
 const $entryForm = document.querySelector('#entry-form');
@@ -99,5 +99,7 @@ $aEntries.addEventListener('click', () => {
 const $aEntryForm = document.querySelector('#entry-form-a');
 if (!$aEntryForm) throw new Error('$aEntry-form-a query failed');
 $aEntryForm.addEventListener('click', () => {
+  formElementsValues.reset();
+  $img.src = originalSrc;
   viewSwap('entry-form');
 });
