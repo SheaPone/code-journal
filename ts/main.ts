@@ -57,6 +57,7 @@ formElementsValues.addEventListener('submit', (event: Event) => {
 function renderEntry(entry: Entry): HTMLLIElement {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
+  $li.setAttribute('data-entry-id', 'data.entryId');
 
   const $div1 = document.createElement('div');
   $div1.setAttribute('class', 'column-half');
@@ -73,6 +74,10 @@ function renderEntry(entry: Entry): HTMLLIElement {
   const $h2 = document.createElement('h2');
   $h2.textContent = entry.title;
   $div2.appendChild($h2);
+
+  const $pencil = document.createElement('i');
+  $pencil.setAttribute('class', 'fas fa-pencil-alt');
+  $h2.appendChild($pencil);
 
   const $p = document.createElement('p');
   $p.textContent = entry.notes;
