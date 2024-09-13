@@ -9,6 +9,7 @@ interface Entry {
   title: string;
   photo: string;
   notes: string;
+  entryId: number;
 }
 
 // Input event listener//
@@ -44,13 +45,16 @@ formElementsValues.addEventListener('submit', (event: Event) => {
   };
   data.nextEntryId++;
   data.entries.unshift(newEntry);
+  $ul?.prepend(renderEntry(newEntry));
+  viewSwap('entries');
+  toggleNoEntries();
   writeEntries();
   $img.src = originalSrc;
   formElementsValues.reset();
 });
 
 // Function to render entry//
-function renderEntry(entry: Entry): void {
+function renderEntry(entry: Entry): HTMLLIElement {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
 
@@ -84,5 +88,53 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < data.entries.length; i++) {
     const dataEntry = data.entries[i];
     $ul.appendChild(renderEntry(dataEntry));
+    viewSwap(data.view);
+    toggleNoEntries();
   }
+});
+
+// Function to display no entries message//
+const $entriesMessage = document.querySelector('.entries');
+if (!$entriesMessage) throw new Error('$entriesMessage query failed');
+
+function toggleNoEntries(): any {
+  if (data.nextEntryId === 1) {
+    $entriesMessage!.className = 'entries no';
+  } else {
+    $entriesMessage!.className = 'entries yes';
+  }
+}
+
+// View Swap function//
+const $view = document.querySelector('.view');
+const $entries = document.querySelector('#entries');
+const $entryForm = document.querySelector('#entry-form');
+
+if (!$view || !$entries || !$entryForm)
+  throw new Error('$view, $entries, or $entryForm query failed');
+
+function viewSwap(viewName: 'entries' | 'entry-form'): any {
+  if (viewName === 'entries') {
+    $entries!.className = 'view';
+    $entryForm!.className = 'view hidden';
+  } else if (viewName === 'entry-form') {
+    $entryForm!.className = 'view';
+    $entries!.className = 'view hidden';
+  }
+  data.view = viewName;
+  localStorage.setItem('view', data.view);
+}
+
+const $aEntries = document.querySelector('#entries-a');
+if (!$aEntries) throw new Error('$aEntries query failed');
+
+$aEntries!.addEventListener('click', () => {
+  viewSwap('entries');
+});
+
+const $aEntryForm = document.querySelector('#entry-form-a');
+if (!$aEntryForm) throw new Error('$aEntry-form-a query failed');
+
+$aEntryForm!.addEventListener('click', () => {
+  viewSwap('entry-form');
 });

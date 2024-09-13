@@ -26,6 +26,15 @@ header > .container > h1 {
   font-family: fantasy;
 }
 
+#entries-a {
+  display: inline;
+  margin-left: 0.75rem;
+  font-size: 90%;
+  font-weight: 200;
+  margin-top: 2rem;
+  cursor: pointer;
+}
+
 .title {
   margin-top: 2%;
 }
@@ -62,6 +71,7 @@ button {
   float: right;
   padding: 0.4rem 0.75rem;
   margin-top: 3%;
+  cursor: pointer;
 }
 
 ul {

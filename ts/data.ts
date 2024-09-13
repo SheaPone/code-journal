@@ -1,3 +1,10 @@
+interface Data {
+  view: 'entries' | 'entry-form';
+  entries: Entry[];
+  editing: null | Entry[];
+  nextEntryId: number;
+}
+
 let data: any = {
   view: 'entry-form',
   entries: [],
@@ -15,7 +22,7 @@ function writeEntries(): void {
 console.log(writeEntries);
 
 // Function to transform JSON back to javascript
-function readEntries(): any {
+function readEntries(): Data {
   const storage = localStorage.getItem('data-storage');
   if (storage !== null) {
     const newData = JSON.parse(storage);
