@@ -5,6 +5,13 @@ interface FormElements extends HTMLFormControlsCollection {
   entryId: number;
 }
 
+interface Entry {
+  title: string;
+  photo: string;
+  notes: string;
+  entryId: number;
+}
+
 // Input event listener//
 const $photo = document.querySelector('#photo') as HTMLInputElement;
 const $img = document.querySelector('img') as HTMLImageElement;
@@ -37,8 +44,99 @@ formElementsValues.addEventListener('submit', (event: Event) => {
     entryId: data.nextEntryId,
   };
   data.nextEntryId++;
-  data.entries.push(newEntry);
+  data.entries.unshift(newEntry);
+  $ul?.prepend(renderEntry(newEntry));
+  viewSwap('entries');
+  toggleNoEntries();
   writeEntries();
   $img.src = originalSrc;
   formElementsValues.reset();
+});
+
+// Function to render entry//
+function renderEntry(entry: Entry): HTMLLIElement {
+  const $li = document.createElement('li');
+  $li.setAttribute('class', 'row');
+
+  const $div1 = document.createElement('div');
+  $div1.setAttribute('class', 'column-half');
+  $li.appendChild($div1);
+
+  const $img = document.createElement('img');
+  $img.setAttribute('src', entry.photo);
+  $div1.appendChild($img);
+
+  const $div2 = document.createElement('div');
+  $div2.setAttribute('class', 'column-half');
+  $li.appendChild($div2);
+
+  const $h2 = document.createElement('h2');
+  $h2.textContent = entry.title;
+  $div2.appendChild($h2);
+
+  const $p = document.createElement('p');
+  $p.textContent = entry.notes;
+  $div2.appendChild($p);
+
+  return $li;
+}
+
+const $ul = document.querySelector('ul');
+if (!$ul) throw new Error('$ul query failed');
+
+document.addEventListener('DOMContentLoaded', () => {
+  for (let i = 0; i < data.entries.length; i++) {
+    const dataEntry = data.entries[i];
+    $ul.appendChild(renderEntry(dataEntry));
+  }
+  viewSwap(data.view);
+  toggleNoEntries();
+});
+
+// Function to display no entries message//
+const $entriesMessage = document.querySelector('.entries');
+if (!$entriesMessage) throw new Error('$entriesMessage query failed');
+
+function toggleNoEntries(): any {
+  if (data.nextEntryId === 1) {
+    $entriesMessage!.className = 'entries no';
+  } else {
+    $entriesMessage!.className = 'entries yes';
+  }
+}
+
+// View Swap function//
+const $view = document.querySelector('.view');
+const $entries = document.querySelector('#entries');
+const $entryForm = document.querySelector('#entry-form');
+
+if (!$view || !$entries || !$entryForm)
+  throw new Error('$view, $entries, or $entryForm query failed');
+
+function viewSwap(viewName: 'entries' | 'entry-form'): any {
+  if (viewName === 'entries') {
+    $entries!.className = 'view';
+    $entryForm!.className = 'view hidden';
+  } else if (viewName === 'entry-form') {
+    $entryForm!.className = 'view';
+    $entries!.className = 'view hidden';
+  }
+  data.view = viewName;
+  localStorage.setItem('view', data.view);
+}
+
+const $aEntries = document.querySelector('#entries-a');
+if (!$aEntries) throw new Error('$aEntries query failed');
+
+$aEntries!.addEventListener('click', () => {
+  viewSwap('entries');
+});
+
+const $aEntryForm = document.querySelector('#entry-form-a');
+if (!$aEntryForm) throw new Error('$aEntry-form-a query failed');
+
+$aEntryForm!.addEventListener('click', () => {
+  formElementsValues.reset();
+  $img.src = originalSrc;
+  viewSwap('entry-form');
 });
