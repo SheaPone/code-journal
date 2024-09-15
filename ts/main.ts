@@ -57,7 +57,7 @@ formElementsValues.addEventListener('submit', (event: Event) => {
 function renderEntry(entry: Entry): HTMLLIElement {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
-  $li.setAttribute('data-entry-id', 'data.entryId');
+  $li.setAttribute('data-entry-id', `${entry.entryId}`);
 
   const $div1 = document.createElement('div');
   $div1.setAttribute('class', 'column-half');
@@ -144,4 +144,30 @@ $aEntryForm!.addEventListener('click', () => {
   formElementsValues.reset();
   $img.src = originalSrc;
   viewSwap('entry-form');
+});
+
+const $editEntry = document.querySelector('.edit-entry');
+const $entryView = document.querySelector('.entry-view');
+if (!$editEntry || !$entryView)
+  throw new Error('$editEntry or $entryView query failed');
+
+$ul.addEventListener('click', (event: Event) => {
+  const eventTarget = event.target as HTMLElement;
+  if (eventTarget.tagName === 'I') {
+    const closestLi = eventTarget.closest('li') as HTMLLIElement;
+    if (closestLi) {
+      const editEntryId = closestLi.getAttribute('data-entry-id');
+      viewSwap('entry-form');
+      console.log(editEntryId);
+      for (let i = 0; i < data.entries.length; i++) {
+        if (data.entries[i].entryId === editEntryId) {
+          viewSwap('entry-form');
+          const dataEntry = data.entries[i];
+          console.log(dataEntry);
+          data.editing = dataEntry;
+          break;
+        }
+      }
+    }
+  }
 });

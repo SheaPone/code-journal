@@ -83,6 +83,10 @@ ul {
   list-style-type: none;
 }
 
+.fas {
+  cursor: pointer;
+}
+
 .column-third {
   flex-basis: calc(100% / 3);
 }

@@ -37,7 +37,7 @@ formElementsValues.addEventListener('submit', (event) => {
 function renderEntry(entry) {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
-  $li.setAttribute('data-entry-id', 'data.entryId');
+  $li.setAttribute('data-entry-id', `${entry.entryId}`);
   const $div1 = document.createElement('div');
   $div1.setAttribute('class', 'column-half');
   $li.appendChild($div1);
@@ -106,4 +106,28 @@ $aEntryForm.addEventListener('click', () => {
   formElementsValues.reset();
   $img.src = originalSrc;
   viewSwap('entry-form');
+});
+const $editEntry = document.querySelector('.edit-entry');
+const $entryView = document.querySelector('.entry-view');
+if (!$editEntry || !$entryView)
+  throw new Error('$editEntry or $entryView query failed');
+$ul.addEventListener('click', (event) => {
+  let eventTarget = event.target;
+  if (eventTarget.tagName === 'I') {
+    let closestLi = eventTarget.closest('li');
+    if (closestLi) {
+      let editEntryId = closestLi.getAttribute('data-entry-id');
+      viewSwap('entry-form');
+      console.log(editEntryId);
+      for (let i = 0; i < data.entries.length; i++) {
+        if (data.entries[i].entryId === editEntryId) {
+          viewSwap('entry-form');
+          let dataEntry = data.entries[i];
+          console.log(dataEntry);
+          data.editing = dataEntry;
+          break;
+        }
+      }
+    }
+  }
 });
