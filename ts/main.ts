@@ -43,14 +43,44 @@ formElementsValues.addEventListener('submit', (event: Event) => {
     notes: $formElements.notes.value,
     entryId: data.nextEntryId,
   };
-  data.nextEntryId++;
-  data.entries.unshift(newEntry);
-  $ul?.prepend(renderEntry(newEntry));
-  viewSwap('entries');
-  toggleNoEntries();
-  writeEntries();
-  $img.src = originalSrc;
-  formElementsValues.reset();
+  if (!data.editing) {
+    data.nextEntryId++;
+    data.entries.push(newEntry);
+    $ul?.prepend(renderEntry(newEntry));
+    viewSwap('entries');
+    toggleNoEntries();
+    writeEntries();
+    $img.src = originalSrc;
+    formElementsValues.reset();
+  } else if (data.editing) {
+    for (let i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].entryId === data.editing.entryId) {
+        newEntry.entryId = data.entries[i].entryId;
+        data.entries[i] = newEntry;
+        break;
+      }
+    }
+    const $allLi = document.querySelectorAll('li');
+    if (!$allLi) throw new Error('$allLi query failed');
+    for (let i = 0; i < $allLi.length; i++) {
+      if (
+        Number($allLi[i].getAttribute('data-entry-id')) === data.editing.entryId
+      ) {
+        const $originalLi = $allLi[i];
+        const $newLi = renderEntry(newEntry);
+        $ul?.replaceChild($newLi, $originalLi);
+        break;
+      }
+    }
+    data.editing = null;
+    viewSwap('entries');
+    toggleNoEntries();
+    writeEntries();
+    $editEntry!.className = 'edit-entry hidden';
+    $entryView!.className = 'entry-view';
+    $img.src = originalSrc;
+    formElementsValues.reset();
+  }
 });
 
 // Function to render entry//
@@ -127,7 +157,6 @@ function viewSwap(viewName: 'entries' | 'entry-form'): any {
     $entries!.className = 'view hidden';
   }
   data.view = viewName;
-  localStorage.setItem('view', data.view);
 }
 
 const $aEntries = document.querySelector('#entries-a');
@@ -146,6 +175,14 @@ $aEntryForm!.addEventListener('click', () => {
   viewSwap('entry-form');
 });
 
+function populateEntry(entry: Entry): void {
+  const $formElements = formElementsValues.elements as FormElements;
+  $formElements.title.value = entry.title;
+  $formElements.photo.value = entry.photo;
+  $formElements.notes.value = entry.notes;
+  $img.src = entry.photo;
+}
+
 const $editEntry = document.querySelector('.edit-entry');
 const $entryView = document.querySelector('.entry-view');
 if (!$editEntry || !$entryView)
@@ -157,14 +194,15 @@ $ul.addEventListener('click', (event: Event) => {
     const closestLi = eventTarget.closest('li') as HTMLLIElement;
     if (closestLi) {
       const editEntryId = closestLi.getAttribute('data-entry-id');
-      viewSwap('entry-form');
-      console.log(editEntryId);
+      const editableEntryId = Number(editEntryId);
       for (let i = 0; i < data.entries.length; i++) {
-        if (data.entries[i].entryId === editEntryId) {
+        if (data.entries[i].entryId === editableEntryId) {
           viewSwap('entry-form');
           const dataEntry = data.entries[i];
-          console.log(dataEntry);
           data.editing = dataEntry;
+          populateEntry(dataEntry);
+          $editEntry!.className = 'edit-entry';
+          $entryView!.className = 'entry-view hidden';
           break;
         }
       }

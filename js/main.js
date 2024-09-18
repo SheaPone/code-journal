@@ -24,14 +24,44 @@ formElementsValues.addEventListener('submit', (event) => {
     notes: $formElements.notes.value,
     entryId: data.nextEntryId,
   };
-  data.nextEntryId++;
-  data.entries.unshift(newEntry);
-  $ul?.prepend(renderEntry(newEntry));
-  viewSwap('entries');
-  toggleNoEntries();
-  writeEntries();
-  $img.src = originalSrc;
-  formElementsValues.reset();
+  if (!data.editing) {
+    data.nextEntryId++;
+    data.entries.push(newEntry);
+    $ul?.prepend(renderEntry(newEntry));
+    viewSwap('entries');
+    toggleNoEntries();
+    writeEntries();
+    $img.src = originalSrc;
+    formElementsValues.reset();
+  } else if (data.editing) {
+    for (let i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].entryId === data.editing.entryId) {
+        newEntry.entryId = data.entries[i].entryId;
+        data.entries[i] = newEntry;
+        break;
+      }
+    }
+    const $allLi = document.querySelectorAll('li');
+    if (!$allLi) throw new Error('$allLi query failed');
+    for (let i = 0; i < $allLi.length; i++) {
+      if (
+        Number($allLi[i].getAttribute('data-entry-id')) === data.editing.entryId
+      ) {
+        let $originalLi = $allLi[i];
+        let $newLi = renderEntry(newEntry);
+        $ul?.replaceChild($newLi, $originalLi);
+        break;
+      }
+    }
+    data.editing = null;
+    viewSwap('entries');
+    toggleNoEntries();
+    writeEntries();
+    $editEntry.className = 'edit-entry hidden';
+    $entryView.className = 'entry-view';
+    $img.src = originalSrc;
+    formElementsValues.reset();
+  }
 });
 // Function to render entry//
 function renderEntry(entry) {
@@ -93,7 +123,6 @@ function viewSwap(viewName) {
     $entries.className = 'view hidden';
   }
   data.view = viewName;
-  localStorage.setItem('view', data.view);
 }
 const $aEntries = document.querySelector('#entries-a');
 if (!$aEntries) throw new Error('$aEntries query failed');
@@ -107,24 +136,32 @@ $aEntryForm.addEventListener('click', () => {
   $img.src = originalSrc;
   viewSwap('entry-form');
 });
+function populateEntry(entry) {
+  const $formElements = formElementsValues.elements;
+  $formElements.title.value = entry.title;
+  $formElements.photo.value = entry.photo;
+  $formElements.notes.value = entry.notes;
+  $img.src = entry.photo;
+}
 const $editEntry = document.querySelector('.edit-entry');
 const $entryView = document.querySelector('.entry-view');
 if (!$editEntry || !$entryView)
   throw new Error('$editEntry or $entryView query failed');
 $ul.addEventListener('click', (event) => {
-  let eventTarget = event.target;
+  const eventTarget = event.target;
   if (eventTarget.tagName === 'I') {
-    let closestLi = eventTarget.closest('li');
+    const closestLi = eventTarget.closest('li');
     if (closestLi) {
       let editEntryId = closestLi.getAttribute('data-entry-id');
-      viewSwap('entry-form');
-      console.log(editEntryId);
+      let editableEntryId = Number(editEntryId);
       for (let i = 0; i < data.entries.length; i++) {
-        if (data.entries[i].entryId === editEntryId) {
+        if (data.entries[i].entryId === editableEntryId) {
           viewSwap('entry-form');
-          let dataEntry = data.entries[i];
-          console.log(dataEntry);
+          const dataEntry = data.entries[i];
           data.editing = dataEntry;
+          populateEntry(dataEntry);
+          $editEntry.className = 'edit-entry';
+          $entryView.className = 'entry-view hidden';
           break;
         }
       }
