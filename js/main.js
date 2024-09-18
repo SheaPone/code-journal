@@ -26,7 +26,7 @@ formElementsValues.addEventListener('submit', (event) => {
   };
   if (!data.editing) {
     data.nextEntryId++;
-    data.entries.push(newEntry);
+    data.entries.unshift(newEntry);
     $ul?.prepend(renderEntry(newEntry));
     viewSwap('entries');
     toggleNoEntries();
@@ -47,8 +47,8 @@ formElementsValues.addEventListener('submit', (event) => {
       if (
         Number($allLi[i].getAttribute('data-entry-id')) === data.editing.entryId
       ) {
-        let $originalLi = $allLi[i];
-        let $newLi = renderEntry(newEntry);
+        const $originalLi = $allLi[i];
+        const $newLi = renderEntry(newEntry);
         $ul?.replaceChild($newLi, $originalLi);
         break;
       }
@@ -152,8 +152,8 @@ $ul.addEventListener('click', (event) => {
   if (eventTarget.tagName === 'I') {
     const closestLi = eventTarget.closest('li');
     if (closestLi) {
-      let editEntryId = closestLi.getAttribute('data-entry-id');
-      let editableEntryId = Number(editEntryId);
+      const editEntryId = closestLi.getAttribute('data-entry-id');
+      const editableEntryId = Number(editEntryId);
       for (let i = 0; i < data.entries.length; i++) {
         if (data.entries[i].entryId === editableEntryId) {
           viewSwap('entry-form');

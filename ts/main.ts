@@ -45,7 +45,7 @@ formElementsValues.addEventListener('submit', (event: Event) => {
   };
   if (!data.editing) {
     data.nextEntryId++;
-    data.entries.push(newEntry);
+    data.entries.unshift(newEntry);
     $ul?.prepend(renderEntry(newEntry));
     viewSwap('entries');
     toggleNoEntries();
