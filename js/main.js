@@ -123,6 +123,7 @@ function viewSwap(viewName) {
     $entries.className = 'view hidden';
   }
   data.view = viewName;
+  writeEntries();
 }
 const $aEntries = document.querySelector('#entries-a');
 if (!$aEntries) throw new Error('$aEntries query failed');

@@ -157,6 +157,7 @@ function viewSwap(viewName: 'entries' | 'entry-form'): any {
     $entries!.className = 'view hidden';
   }
   data.view = viewName;
+  writeEntries();
 }
 
 const $aEntries = document.querySelector('#entries-a');
