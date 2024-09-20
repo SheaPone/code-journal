@@ -24,19 +24,50 @@ formElementsValues.addEventListener('submit', (event) => {
     notes: $formElements.notes.value,
     entryId: data.nextEntryId,
   };
-  data.nextEntryId++;
-  data.entries.unshift(newEntry);
-  $ul?.prepend(renderEntry(newEntry));
-  viewSwap('entries');
-  toggleNoEntries();
-  writeEntries();
-  $img.src = originalSrc;
-  formElementsValues.reset();
+  if (!data.editing) {
+    data.nextEntryId++;
+    data.entries.unshift(newEntry);
+    $ul?.prepend(renderEntry(newEntry));
+    viewSwap('entries');
+    toggleNoEntries();
+    writeEntries();
+    $img.src = originalSrc;
+    formElementsValues.reset();
+  } else if (data.editing) {
+    for (let i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].entryId === data.editing.entryId) {
+        newEntry.entryId = data.entries[i].entryId;
+        data.entries[i] = newEntry;
+        break;
+      }
+    }
+    const $allLi = document.querySelectorAll('li');
+    if (!$allLi) throw new Error('$allLi query failed');
+    for (let i = 0; i < $allLi.length; i++) {
+      if (
+        Number($allLi[i].getAttribute('data-entry-id')) === data.editing.entryId
+      ) {
+        const $originalLi = $allLi[i];
+        const $newLi = renderEntry(newEntry);
+        $ul?.replaceChild($newLi, $originalLi);
+        break;
+      }
+    }
+    data.editing = null;
+    viewSwap('entries');
+    toggleNoEntries();
+    writeEntries();
+    $editEntry.className = 'edit-entry hidden';
+    $entryView.className = 'entry-view';
+    $img.src = originalSrc;
+    formElementsValues.reset();
+  }
 });
 // Function to render entry//
 function renderEntry(entry) {
   const $li = document.createElement('li');
   $li.setAttribute('class', 'row');
+  $li.setAttribute('data-entry-id', `${entry.entryId}`);
   const $div1 = document.createElement('div');
   $div1.setAttribute('class', 'column-half');
   $li.appendChild($div1);
@@ -49,6 +80,9 @@ function renderEntry(entry) {
   const $h2 = document.createElement('h2');
   $h2.textContent = entry.title;
   $div2.appendChild($h2);
+  const $pencil = document.createElement('i');
+  $pencil.setAttribute('class', 'fas fa-pencil-alt');
+  $h2.appendChild($pencil);
   const $p = document.createElement('p');
   $p.textContent = entry.notes;
   $div2.appendChild($p);
@@ -89,7 +123,7 @@ function viewSwap(viewName) {
     $entries.className = 'view hidden';
   }
   data.view = viewName;
-  localStorage.setItem('view', data.view);
+  writeEntries();
 }
 const $aEntries = document.querySelector('#entries-a');
 if (!$aEntries) throw new Error('$aEntries query failed');
@@ -102,4 +136,36 @@ $aEntryForm.addEventListener('click', () => {
   formElementsValues.reset();
   $img.src = originalSrc;
   viewSwap('entry-form');
+});
+function populateEntry(entry) {
+  const $formElements = formElementsValues.elements;
+  $formElements.title.value = entry.title;
+  $formElements.photo.value = entry.photo;
+  $formElements.notes.value = entry.notes;
+  $img.src = entry.photo;
+}
+const $editEntry = document.querySelector('.edit-entry');
+const $entryView = document.querySelector('.entry-view');
+if (!$editEntry || !$entryView)
+  throw new Error('$editEntry or $entryView query failed');
+$ul.addEventListener('click', (event) => {
+  const eventTarget = event.target;
+  if (eventTarget.tagName === 'I') {
+    const closestLi = eventTarget.closest('li');
+    if (closestLi) {
+      const editEntryId = closestLi.getAttribute('data-entry-id');
+      const editableEntryId = Number(editEntryId);
+      for (let i = 0; i < data.entries.length; i++) {
+        if (data.entries[i].entryId === editableEntryId) {
+          viewSwap('entry-form');
+          const dataEntry = data.entries[i];
+          data.editing = dataEntry;
+          populateEntry(dataEntry);
+          $editEntry.className = 'edit-entry';
+          $entryView.className = 'entry-view hidden';
+          break;
+        }
+      }
+    }
+  }
 });

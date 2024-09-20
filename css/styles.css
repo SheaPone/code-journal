@@ -74,8 +74,17 @@ button {
   cursor: pointer;
 }
 
+i {
+  float: right;
+  font-size: 70%;
+}
+
 ul {
   list-style-type: none;
+}
+
+.fas {
+  cursor: pointer;
 }
 
 .column-third {

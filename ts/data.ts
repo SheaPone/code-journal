@@ -1,7 +1,7 @@
 interface Data {
   view: 'entries' | 'entry-form';
   entries: Entry[];
-  editing: null | Entry[];
+  editing: null | Entry;
   nextEntryId: number;
 }
 
