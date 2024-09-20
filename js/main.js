@@ -58,7 +58,9 @@ formElementsValues.addEventListener('submit', (event) => {
     toggleNoEntries();
     writeEntries();
     $editEntry.className = 'edit-entry hidden';
+    $deleteButton.className = 'delete hidden';
     $entryView.className = 'entry-view';
+    $aEntries.textContent = 'Entries';
     $img.src = originalSrc;
     formElementsValues.reset();
   }
@@ -144,10 +146,11 @@ function populateEntry(entry) {
   $formElements.notes.value = entry.notes;
   $img.src = entry.photo;
 }
+const $deleteButton = document.querySelector('.delete');
 const $editEntry = document.querySelector('.edit-entry');
 const $entryView = document.querySelector('.entry-view');
-if (!$editEntry || !$entryView)
-  throw new Error('$editEntry or $entryView query failed');
+if (!$editEntry || !$entryView || !$deleteButton)
+  throw new Error('$editEntry or $entryView or $deleteButton query failed');
 $ul.addEventListener('click', (event) => {
   const eventTarget = event.target;
   if (eventTarget.tagName === 'I') {
@@ -162,6 +165,8 @@ $ul.addEventListener('click', (event) => {
           data.editing = dataEntry;
           populateEntry(dataEntry);
           $editEntry.className = 'edit-entry';
+          $deleteButton.className = 'delete';
+          $aEntries.textContent = '';
           $entryView.className = 'entry-view hidden';
           break;
         }
@@ -169,3 +174,42 @@ $ul.addEventListener('click', (event) => {
     }
   }
 });
+//delete an entry
+const $dismissModal = document.querySelector('.dismiss-modal');
+const $dialog = document.querySelector('dialog');
+const $deleteEntry = document.querySelector('.delete-entry');
+if (!$dismissModal) throw new Error('$dismissModal does not exist');
+if (!$dialog) throw new Error('$dialog does not exist');
+if (!$deleteEntry) throw new Error('$deleteEntry does not exist');
+function openModal() {
+  $dialog.showModal();
+}
+$deleteButton.addEventListener('click', openModal);
+function closeModal() {
+  $dialog?.close();
+}
+$dismissModal.addEventListener('click', closeModal);
+function deleteEntry() {
+  let clickedEntry = data.editing.entryId;
+  for (let i = 0; i < data.entries.length; i++) {
+    if (data.entries[i].entryId === clickedEntry) {
+      data.entries.splice(i, 1);
+      writeEntries();
+      break;
+    }
+  }
+  const $allLi = document.querySelectorAll('li');
+  if (!$allLi) throw new Error('$allLi query failed');
+  for (let i = 0; i < $allLi.length; i++) {
+    if (Number($allLi[i].getAttribute('data-entry-id')) === clickedEntry) {
+      const $deleteLi = $allLi[i];
+      $deleteLi.remove();
+      break;
+    }
+  }
+  data.editing = null;
+  $dialog?.close();
+  viewSwap('entries');
+  toggleNoEntries();
+}
+$deleteEntry.addEventListener('click', deleteEntry);
