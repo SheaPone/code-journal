@@ -76,9 +76,8 @@ formElementsValues.addEventListener('submit', (event: Event) => {
     viewSwap('entries');
     toggleNoEntries();
     writeEntries();
-    $editEntry!.className = 'edit-entry hidden';
     $deleteButton!.className = 'delete hidden';
-    $entryView!.className = 'entry-view';
+    $entryView!.textContent = 'New Entry';
     $aEntries!.textContent = 'Entries';
     $img.src = originalSrc;
     formElementsValues.reset();
@@ -135,7 +134,7 @@ const $entriesMessage = document.querySelector('.entries');
 if (!$entriesMessage) throw new Error('$entriesMessage query failed');
 
 function toggleNoEntries(): any {
-  if (data.nextEntryId === 1) {
+  if (data.entries.length === 0) {
     $entriesMessage!.className = 'entries no';
   } else {
     $entriesMessage!.className = 'entries yes';
@@ -187,10 +186,9 @@ function populateEntry(entry: Entry): void {
 }
 
 const $deleteButton = document.querySelector('.delete');
-const $editEntry = document.querySelector('.edit-entry');
 const $entryView = document.querySelector('.entry-view');
-if (!$editEntry || !$entryView || !$deleteButton)
-  throw new Error('$editEntry or $entryView or $deleteButton query failed');
+if (!$entryView || !$deleteButton)
+  throw new Error('$entryView or $deleteButton query failed');
 
 $ul.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;
@@ -205,11 +203,9 @@ $ul.addEventListener('click', (event: Event) => {
           const dataEntry = data.entries[i];
           data.editing = dataEntry;
           populateEntry(dataEntry);
-          $editEntry!.className = 'edit-entry';
           $deleteButton!.className = 'delete';
           $aEntries!.textContent = '';
-          $entryView!.className = 'entry-view hidden';
-          break;
+          $entryView!.textContent = 'Edit Entry';
         }
       }
     }

@@ -57,9 +57,8 @@ formElementsValues.addEventListener('submit', (event) => {
     viewSwap('entries');
     toggleNoEntries();
     writeEntries();
-    $editEntry.className = 'edit-entry hidden';
     $deleteButton.className = 'delete hidden';
-    $entryView.className = 'entry-view';
+    $entryView.textContent = 'New Entry';
     $aEntries.textContent = 'Entries';
     $img.src = originalSrc;
     formElementsValues.reset();
@@ -104,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const $entriesMessage = document.querySelector('.entries');
 if (!$entriesMessage) throw new Error('$entriesMessage query failed');
 function toggleNoEntries() {
-  if (data.nextEntryId === 1) {
+  if (data.entries.length === 0) {
     $entriesMessage.className = 'entries no';
   } else {
     $entriesMessage.className = 'entries yes';
@@ -147,10 +146,9 @@ function populateEntry(entry) {
   $img.src = entry.photo;
 }
 const $deleteButton = document.querySelector('.delete');
-const $editEntry = document.querySelector('.edit-entry');
 const $entryView = document.querySelector('.entry-view');
-if (!$editEntry || !$entryView || !$deleteButton)
-  throw new Error('$editEntry or $entryView or $deleteButton query failed');
+if (!$entryView || !$deleteButton)
+  throw new Error('$entryView or $deleteButton query failed');
 $ul.addEventListener('click', (event) => {
   const eventTarget = event.target;
   if (eventTarget.tagName === 'I') {
@@ -164,17 +162,15 @@ $ul.addEventListener('click', (event) => {
           const dataEntry = data.entries[i];
           data.editing = dataEntry;
           populateEntry(dataEntry);
-          $editEntry.className = 'edit-entry';
           $deleteButton.className = 'delete';
           $aEntries.textContent = '';
-          $entryView.className = 'entry-view hidden';
-          break;
+          $entryView.textContent = 'Edit Entry';
         }
       }
     }
   }
 });
-//delete an entry
+// delete an entry
 const $dismissModal = document.querySelector('.dismiss-modal');
 const $dialog = document.querySelector('dialog');
 const $deleteEntry = document.querySelector('.delete-entry');
@@ -190,7 +186,7 @@ function closeModal() {
 }
 $dismissModal.addEventListener('click', closeModal);
 function deleteEntry() {
-  let clickedEntry = data.editing.entryId;
+  const clickedEntry = data.editing.entryId;
   for (let i = 0; i < data.entries.length; i++) {
     if (data.entries[i].entryId === clickedEntry) {
       data.entries.splice(i, 1);
