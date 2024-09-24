@@ -207,5 +207,8 @@ function deleteEntry() {
   $dialog?.close();
   viewSwap('entries');
   toggleNoEntries();
+  $entryView.textContent = 'New Entry';
+  $deleteButton.className = 'delete hidden';
+  $aEntries.textContent = 'Entries';
 }
 $deleteEntry.addEventListener('click', deleteEntry);
