@@ -100,6 +100,38 @@ ul {
   display: none;
 }
 
+.delete {
+  background-color: transparent;
+  border-color: transparent;
+  color: red;
+  text-decoration: underline;
+  float: left;
+  margin-top: 20%;
+}
+
+.dismiss-modal {
+  float: left;
+  text-transform: uppercase;
+  background-color: gray;
+  color: black;
+  border-color: transparent;
+}
+
+.delete-entry {
+  float: right;
+  background-color: red;
+  text-transform: uppercase;
+  border-color: transparent;
+}
+
+dialog {
+  border-color: transparent;
+}
+
+dialog > h2 {
+  font-size: 1rem;
+}
+
 @media screen and (width >= 376px) {
   .column-half {
     display: flex;
@@ -113,5 +145,15 @@ ul {
 
   #photo-url {
     margin-top: 1%;
+  }
+
+  .delete {
+    margin-top: 3rem;
+  }
+}
+
+@media screen and (width >= 772px) {
+  .delete {
+    margin-top: 5rem;
   }
 }
