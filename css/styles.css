@@ -132,6 +132,18 @@ dialog > h2 {
   font-size: 1rem;
 }
 
+header > .container > label {
+  font-family: sans-serif;
+  margin-top: 2rem;
+  margin-left: auto;
+}
+
+header > .container > input {
+  width: 30%;
+  margin-left: 0.5rem;
+  margin-top: 1.5rem;
+}
+
 @media screen and (width >= 376px) {
   .column-half {
     display: flex;

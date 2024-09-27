@@ -212,3 +212,29 @@ function deleteEntry() {
   $aEntries.textContent = 'Entries';
 }
 $deleteEntry.addEventListener('click', deleteEntry);
+//add search feature
+const $searchInput = document.querySelector('[data-search]');
+if (!$searchInput) throw new Error('$searchInput query failed.');
+$searchInput.addEventListener('input', (event) => {
+  let eventTarget = event.target;
+  let value = eventTarget.value.toLowerCase();
+  console.log(value);
+  const $allLi = document.querySelectorAll('li');
+  if (!$allLi) throw new Error('$allLi query failed');
+  for (let i = 0; i < $allLi.length; i++) {
+    let entryId = Number($allLi[i].getAttribute('data-entry-id'));
+    for (let index = 0; index < data.entries.length; index++) {
+      if (data.entries[index].entryId === entryId) {
+        if (
+          data.entries[index].title.toLowerCase().includes(value) ||
+          data.entries[index].notes.toLowerCase().includes(value)
+        ) {
+          $allLi[i].style.display = '';
+        } else {
+          $allLi[i].style.display = 'none';
+        }
+        break;
+      }
+    }
+  }
+});
